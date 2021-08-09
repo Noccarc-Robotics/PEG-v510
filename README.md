@@ -1,2 +1,3 @@
 # PEG-V510
-Repository for Maintaining HW Design files.
+Repository for Maintaining Power Board, Mother Board and HMI firmware.
+

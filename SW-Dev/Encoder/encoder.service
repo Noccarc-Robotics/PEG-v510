@@ -1,0 +1,9 @@
+[Unit]
+Description= Encoder Service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/scripts/counter.sh
+
+[Install]
+WantedBy=multi-user.target

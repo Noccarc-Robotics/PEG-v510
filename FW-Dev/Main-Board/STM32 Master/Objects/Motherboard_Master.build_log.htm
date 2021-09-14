@@ -1,0 +1,93 @@
+<html>
+<body>
+<pre>
+<h1>µVision Build Log</h1>
+<h2>Tool Versions:</h2>
+IDE-Version: µVision V5.35.0.0
+Copyright (C) 2021 ARM Ltd and ARM Germany GmbH. All rights reserved.
+License Information: Deepak Admin, Noccarc, LIC=77GNL-0F1AJ-XF2IH-U4RAE-0CQLW-6FJ2S
+ 
+Tool Versions:
+Toolchain:       MDK-ARM Essential  Version: 5.35.0.2
+Toolchain Path:  C:\Keil_v5\ARM\ARMCC\Bin
+C Compiler:      Armcc.exe V5.06 update 7 (build 960)
+Assembler:       Armasm.exe V5.06 update 7 (build 960)
+Linker/Locator:  ArmLink.exe V5.06 update 7 (build 960)
+Library Manager: ArmAr.exe V5.06 update 7 (build 960)
+Hex Converter:   FromElf.exe V5.06 update 7 (build 960)
+CPU DLL:         SARMCM3.DLL V5.35.0.2
+Dialog DLL:      DCM.DLL V1.17.3.0
+Target DLL:      STLink\ST-LINKIII-KEIL_SWO.dll V3.0.9.0
+Dialog DLL:      TCM.DLL V1.53.0.0
+ 
+<h2>Project:</h2>
+C:\Users\Deepak\Desktop\motherboard codes 24-08-2021\motherboard codes\STM32 Master\Motherboard_Master.uvprojx
+Project File Date:  09/02/2021
+
+<h2>Output:</h2>
+*** Using Compiler 'V5.06 update 7 (build 960)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
+Rebuild target 'Target 1'
+compiling hal_gpio_driver.c...
+compiling hal_uart_driver.c...
+compiling stm32f4xx_hal_cortex.c...
+compiling stm32f4xx_hal.c...
+compiling stm32f4xx_hal_dma.c...
+compiling stm32f4xx_hal_dma_ex.c...
+compiling main.c...
+main.c(684): warning:  #550-D: variable "I2C_Dummy_Read_Temp"  was set but never used
+  	uint8_t I2C_Dummy_Read_Temp = 0;
+main.c(1358): warning:  #177-D: variable "Byte_Zero"  was declared but never referenced
+  	uint8_t Byte_Zero;
+main.c(1361): warning:  #177-D: variable "Mantisa"  was declared but never referenced
+  	int Mantisa;
+main.c(1362): warning:  #177-D: variable "Abs_Mantisa"  was declared but never referenced
+  	int Abs_Mantisa;
+main.c(1396): warning:  #550-D: variable "Para_ID"  was set but never used
+  	uint32_t Para_ID;
+main.c: 5 warnings, 0 errors
+compiling stm32f4xx_hal_exti.c...
+assembling startup_stm32f407xx.s...
+compiling stm32f4xx_hal_gpio.c...
+compiling system_stm32f4xx.c...
+compiling stm32f4xx_hal_i2c_ex.c...
+compiling stm32f4xx_hal_msp_template.c...
+compiling stm32f4xx_hal_rcc_ex.c...
+compiling stm32f4xx_hal_rcc.c...
+compiling stm32f4xx_hal_i2c.c...
+linking...
+Program Size: Code=9672 RO-data=424 RW-data=92 ZI-data=2660  
+".\Objects\Motherboard_Master.axf" - 0 Error(s), 5 Warning(s).
+
+<h2>Software Packages used:</h2>
+
+Package Vendor: ARM
+                http://www.keil.com/pack/ARM.CMSIS.5.8.0.pack
+                ARM.CMSIS.5.8.0
+                CMSIS (Common Microcontroller Software Interface Standard)
+   * Component: CORE Version: 5.5.0
+
+Package Vendor: Keil
+                http://www.keil.com/pack/Keil.STM32F4xx_DFP.2.15.0.pack
+                Keil.STM32F4xx_DFP.2.15.0
+                STMicroelectronics STM32F4 Series Device Support, Drivers and Examples
+   * Component: Startup Version: 2.6.3
+
+<h2>Collection of Component include folders:</h2>
+  .\RTE\_Target_1
+  C:\Users\Deepak\AppData\Local\Arm\Packs\ARM\CMSIS\5.8.0\CMSIS\Core\Include
+  C:\Users\Deepak\AppData\Local\Arm\Packs\Keil\STM32F4xx_DFP\2.15.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include
+
+<h2>Collection of Component Files used:</h2>
+
+   * Component: ARM::CMSIS:CORE:5.5.0
+
+   * Component: Keil::Device:Startup:2.6.3
+      Source file:   Drivers\CMSIS\Device\ST\STM32F4xx\Source\Templates\system_stm32f4xx.c
+      Source file:   MDK\Device\Source\ARM\STM32F4xx_OTP.s
+      Include file:  Drivers\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h
+      Source file:   MDK\Device\Source\ARM\STM32F40xxx_41xxx_OPT.s
+      Source file:   Drivers\CMSIS\Device\ST\STM32F4xx\Source\Templates\arm\startup_stm32f407xx.s
+Build Time Elapsed:  00:00:30
+</pre>
+</body>
+</html>

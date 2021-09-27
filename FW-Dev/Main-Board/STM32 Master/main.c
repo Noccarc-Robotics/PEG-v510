@@ -94,6 +94,113 @@ float O2 = 0;
 uint16_t Air_Valve = 0;
 uint16_t O2_Valve = 0;
 
+void Clock_Config (void);
+void Timer2_Init(void);
+void TIMER_DELAY_us(uint32_t delay);
+void TIMER_DELAY_ms(uint32_t delay);
+void delay (uint32_t time);
+void Valves_GPIO_Init(void);
+void I2C3_O2_Flow_Config(void);
+void I2C2_Air_Flow_Config(void);
+void I2C1_Resp_Pressure_Config(void);
+void UART_GPIO_Init(void);
+void SFM3019_I2C2_Init(void);
+void SFM3019_I2C3_Init(void);
+void Resp_Pressure_I2C1_sensor_data(void);
+void UART_1_SOM_Init(void);
+void UART_4_Power_Init(void);
+void UART_6_Master_Slave_Init(void);
+void UART_Packet_Init(void);
+void Make_Packet(uint32_t mode, uint32_t para_id, uint32_t data);
+void Proportional_Valve_Drive(double Air_Flow, double O2_Flow);
+void Packet_Parser(uint8_t data[]);
+void ADC_GPIO_Conf(void);
+void ADC_Init(void);
+void ADC_DMA_Init(void);
+void ADC_Start_DMA(void);
+void ADC_Sensor_Data(void);
+void DAC_Init(void);
+void Inlet_Air_Flow_I2C2_Read(void);
+void Inlet_O2_Flow_I2C3_Read(void);
+
+int main(void)
+{	
+	///CLOCK, TIMERS INITIALIZE////////////////////////////
+	Clock_Config ();
+	Timer2_Init();
+	
+	///GPIO INITIALIZE/////////////////////////////////////
+	UART_GPIO_Init();
+	ADC_GPIO_Conf();
+	
+	///I2C INITIALIZE//////////////////////////////////////
+	I2C1_Resp_Pressure_Config();
+	I2C2_Air_Flow_Config();
+	I2C3_O2_Flow_Config();
+	
+	///ADC INITIALIZE//////////////////////////////////////
+	ADC_Init();
+	ADC_DMA_Init();
+	ADC_Start_DMA();
+
+	///DAC CHANNEL INITIALZE///////////////////////////////
+	DAC_Init();
+	
+	///I2C INITIALIZE//////////////////////////////////////
+	SFM3019_I2C2_Init();
+	SFM3019_I2C3_Init();
+	
+	///UART INITIALIZE/////////////////////////////////////
+	UART_1_SOM_Init(); 
+	UART_4_Power_Init();
+	UART_6_Master_Slave_Init();
+	UART_Packet_Init();
+	
+	///////////////
+	for(int k = 33;k<=40;k++)
+		{
+			Parameter_Data_Array[k] = k;
+		}
+	Parameter_Data_Array[42] = 42;
+		
+	//SAFETY_ACTUATOR_ON();
+	//EXPIRATORY_ACTUATOR_ON();
+				
+	//TIMER_DELAY_ms(100);
+	while(1)
+	{
+		///SENSOR DATA FUNCTIONS/////////////////////////////
+		ADC_Sensor_Data();
+		Inlet_Air_Flow_I2C2_Read();
+		Inlet_O2_Flow_I2C3_Read();
+		Resp_Pressure_I2C1_sensor_data();
+		
+		///PROPORTIONAL VALVE DRIVE FUNCTION/////////////////
+		Proportional_Valve_Drive(AIR, O2);			
+		
+		///CHECK FOR DATA FROM SLAVE/////////////////////////
+		Packet_Parser(UDMA4_POWER_RX_BUFF);
+		
+		
+		///SEND DATA TO POWER BOARD//////////////////////////
+		Make_Packet(SLAVE_MASTER, POWER_SEND, dummy);
+		
+		///SEND DATA TO SOM BOARD////////////////////////////
+		Make_Packet(MCU_GUI, Resp_Volume_MCU_GUI, Parameter_Data_Array[33]);
+		TIMER_DELAY_ms(100);
+		Make_Packet(MCU_GUI, Resp_Pressure_MCU_GUI, Parameter_Data_Array[34]);
+		TIMER_DELAY_ms(100);
+		Make_Packet(MCU_GUI, Resp_Flow_MCU_GUI, Parameter_Data_Array[35]);
+		TIMER_DELAY_ms(100);
+		Make_Packet(MCU_GUI, Resp_Fio2_MCU_GUI, Parameter_Data_Array[36]);
+		TIMER_DELAY_ms(100);
+		
+		///CHECK FOR DATA FROM SOM/////////////////////////
+		Packet_Parser(UDMA1_SOM_RX_BUFF);
+	}
+}
+
+
 void Clock_Config (void)
 {
   //HSE
@@ -116,7 +223,7 @@ void Clock_Config (void)
 	RCC->PLLCFGR = (PLLM<<0) | (PLLN<<6) | (PLLP<<16) | (PLLQ<<24) | (RCC_PLLCFGR_PLLSRC_HSE);
 	
 	
-//ENABLE PLL
+  //ENABLE PLL
 	RCC->CR |= RCC_CR_PLLON;
 	while(!(RCC->CR & RCC_CR_PLLRDY));
 
@@ -1687,7 +1794,7 @@ void DMA2_Stream6_Master_Slave_Tx_callback(void)
 }
 
  
-void DMA2_Stream5_SOM_Rx_IRQHandler (void)
+void DMA2_Stream5_IRQHandler (void)
 {
  if(DMA2->HISR&(1<<11))
  {
@@ -1698,7 +1805,7 @@ void DMA2_Stream5_SOM_Rx_IRQHandler (void)
  }
 }
 
-void DMA2_Stream7_SOM_Tx_IRQHandler (void)
+void DMA2_Stream7_IRQHandler (void)
 {
  if(DMA2->HISR&(1<<27))
  {
@@ -1708,7 +1815,7 @@ void DMA2_Stream7_SOM_Tx_IRQHandler (void)
  }
 }
 
-void DMA1_Stream2_Power_Rx_IRQHandler (void)
+void DMA1_Stream2_IRQHandler (void)
 {
  if(DMA1->LISR&(1<<21))
  {
@@ -1718,7 +1825,7 @@ void DMA1_Stream2_Power_Rx_IRQHandler (void)
  }
 }
 
-void DMA1_Stream4_Power_Tx_IRQHandler (void)
+void DMA1_Stream4_IRQHandler (void)
 {
  if(DMA1->HISR&(1<<5))
  {
@@ -1729,7 +1836,7 @@ void DMA1_Stream4_Power_Tx_IRQHandler (void)
  }
 }
 
-void DMA2_Stream1_Master_Slave_Rx_IRQHandler (void)
+void DMA2_Stream1_IRQHandler (void)
 {
  if(DMA2->LISR&(1<<11))
  {
@@ -1739,7 +1846,7 @@ void DMA2_Stream1_Master_Slave_Rx_IRQHandler (void)
  }
 }
 
-void DMA2_Stream6_Master_Slave_Tx_IRQHandler (void)
+void DMA2_Stream6_IRQHandler (void)
 {
  if(DMA2->HISR&(1<<21))
  {
@@ -1835,83 +1942,6 @@ void Inlet_O2_Flow_I2C3_Read(void)
 	
 	O2_Flow_Data[0] = Flow;
 	O2_Flow_Data[1] = Temperature;
-}
-
-int main(void)
-{	
-	///CLOCK, TIMERS INITIALIZE////////////////////////////
-	Clock_Config ();
-	Timer2_Init();
-	
-	///GPIO INITIALIZE/////////////////////////////////////
-	UART_GPIO_Init();
-	ADC_GPIO_Conf();
-	
-	///I2C INITIALIZE//////////////////////////////////////
-	I2C1_Resp_Pressure_Config();
-	I2C2_Air_Flow_Config();
-	I2C3_O2_Flow_Config();
-	
-	///ADC INITIALIZE//////////////////////////////////////
-	ADC_Init();
-	ADC_DMA_Init();
-	ADC_Start_DMA();
-
-	///DAC CHANNEL INITIALZE///////////////////////////////
-	DAC_Init();
-	
-	///I2C INITIALIZE//////////////////////////////////////
-	SFM3019_I2C2_Init();
-	SFM3019_I2C3_Init();
-	
-	///UART INITIALIZE/////////////////////////////////////
-	UART_1_SOM_Init(); 
-	UART_4_Power_Init();
-	UART_6_Master_Slave_Init();
-	UART_Packet_Init();
-	
-	///////////////
-	for(int k = 33;k<=40;k++)
-		{
-			Parameter_Data_Array[k] = k;
-		}
-	Parameter_Data_Array[42] = 42;
-		
-	//SAFETY_ACTUATOR_ON();
-	//EXPIRATORY_ACTUATOR_ON();
-				
-	//TIMER_DELAY_ms(100);
-	while(1)
-	{
-		///SENSOR DATA FUNCTIONS/////////////////////////////
-		ADC_Sensor_Data();
-		Inlet_Air_Flow_I2C2_Read();
-		Inlet_O2_Flow_I2C3_Read();
-		Resp_Pressure_I2C1_sensor_data();
-		
-		///PROPORTIONAL VALVE DRIVE FUNCTION/////////////////
-		Proportional_Valve_Drive(AIR, O2);			
-		
-		///CHECK FOR DATA FROM SLAVE/////////////////////////
-		Packet_Parser(UDMA4_POWER_RX_BUFF);
-		
-		
-		///SEND DATA TO POWER BOARD//////////////////////////
-		Make_Packet(SLAVE_MASTER, POWER_SEND, dummy);
-		
-		///SEND DATA TO SOM BOARD////////////////////////////
-		Make_Packet(MCU_GUI, Resp_Volume_MCU_GUI, Parameter_Data_Array[33]);
-		TIMER_DELAY_ms(100);
-		Make_Packet(MCU_GUI, Resp_Pressure_MCU_GUI, Parameter_Data_Array[34]);
-		TIMER_DELAY_ms(100);
-		Make_Packet(MCU_GUI, Resp_Flow_MCU_GUI, Parameter_Data_Array[35]);
-		TIMER_DELAY_ms(100);
-		Make_Packet(MCU_GUI, Resp_Fio2_MCU_GUI, Parameter_Data_Array[36]);
-		TIMER_DELAY_ms(100);
-		
-		///CHECK FOR DATA FROM SOM/////////////////////////
-		Packet_Parser(UDMA1_SOM_RX_BUFF);
-	}
 }
 
 	

@@ -1,7 +1,7 @@
 /********************************************************************
 ** @file     HDC2080_us.c
 ** @brief    User Space Driver for HDC2080
-** @author   Copyright (C) 2021  Noccarc Robotics
+** @author   Copyright (C) 2021  Noccarc Robotics Pvt Ltd
 ** @author   Nipun Pal <nipun.k@noccarc.com>
 ** @version  v1
 ** @modified 28/09/21  Module Creation

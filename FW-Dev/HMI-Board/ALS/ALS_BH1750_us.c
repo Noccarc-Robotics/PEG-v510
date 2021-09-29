@@ -16,8 +16,6 @@
 #include <math.h>
 #include <stdlib.h>
 
-// PA0 , PD15 -- pwm channels
-
 #define BUFFSIZE 4
 
 int HexadecimalToDecimal(char *hex) {
@@ -50,11 +48,13 @@ int main(){
     char databuf[10];
     char packet[4];
 
+    // Starting the ALS
     system("i2ctransfer -f -y 0 w1@0x23 0x10");
 
 
     while(1) {
 
+        // Creating a pipe to execute the system command.
         fp = popen("i2ctransfer -f -y 0 r2@0x23", "r");
 
         if (fp == NULL) {
@@ -73,6 +73,7 @@ int main(){
 
         }
 
+        // Close the pipe for clean exit and de-allocation of OS resources.
         pclose(fp);
 
     }

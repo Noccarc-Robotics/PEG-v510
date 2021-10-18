@@ -163,8 +163,7 @@ void lamp()
 
 int main() {
 
-        int       data = 0 ;
-        int       rc   = 0 ;
+		// Spawn notification Lamp thread.
         std::thread N_Lamp (lamp);
 
         while (1) {

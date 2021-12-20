@@ -1,0 +1,427 @@
+// SPDX-License-Identifier: (GPL-2.0+ OR BSD-3-Clause)
+/*
+ * Copyright (C) STMicroelectronics 2019 - All Rights Reserved
+ * Author: Alexandre Torgue <alexandre.torgue@st.com> for STMicroelectronics.
+ */
+
+/dts-v1/;
+
+#include "stm32mp157.dtsi"
+#include "stm32mp15xc.dtsi"
+#include "stm32mp15-pinctrl-v510.dtsi"
+#include "stm32mp15xxac-pinctrl.dtsi"
+#include "stm32mp15xx-dkx-v510.dtsi"
+#include <dt-bindings/rtc/rtc-stm32.h>
+
+/ {
+	model = "STMicroelectronics STM32MP157C-DK2 Discovery Board";
+	compatible = "st,stm32mp157c-dk2", "st,stm32mp157";
+
+	aliases {
+		serial1 = &uart7;
+	};
+
+	chosen {
+		stdout-path = "serial0:115200n8";
+	};
+
+	panel {
+		compatible = "innolux,g121x1-l03", "simple-panel";
+		//backlight = <&backlight>;
+		port@0 {
+			panel_in: endpoint {
+				remote-endpoint = <&ltdc_out_rgb>;
+			};
+		};
+	};
+};
+
+&pinctrl{
+
+	tim2_pwm_pins_a: tim2_pwm-0 {
+		pins {
+			pinmux = <STM32_PINMUX('G', 8, AF1)>; /* TIM2_CH1 */
+			bias-disable;
+			drive-push-pull;
+			slew-rate = <0>;
+		};
+	};
+
+	tim2_pwm_sleep_pins_a: tim2_pwm_sleep-0 {
+		pins {
+			pinmux = <STM32_PINMUX('G', 8, ANALOG)>; /* TIM2_CH1 */
+		};
+	};
+
+
+	tim3_pwm_pins_a: tim3_pwm-0 {
+		pins {
+			pinmux = <STM32_PINMUX('A', 6, AF2)>; /* TIM3_CH1 */
+			bias-disable;
+			drive-push-pull;
+			slew-rate = <0>;
+		};
+	};
+
+	tim3_pwm_sleep_pins_a: tim3_pwm_sleep-0 {
+		pins {
+			pinmux = <STM32_PINMUX('A', 6, ANALOG)>; /* TIM3_CH1 */
+		};
+	};
+
+
+	tim4_pwm_pins_a: tim4_pwm-0 {
+		pins {
+			pinmux = <STM32_PINMUX('B', 8, AF2)>; /* TIM4_CH3 */
+			bias-disable;
+			drive-push-pull;
+			slew-rate = <0>;
+		};
+	};
+
+	tim4_pwm_sleep_pins_a: tim4_pwm_sleep-0 {
+		pins {
+			pinmux = <STM32_PINMUX('B', 8, ANALOG)>; /* TIM4_CH3 */
+		};
+	};
+
+
+	tim13_pwm_pins_a: tim13_pwm-0 {
+		pins {
+			pinmux = <STM32_PINMUX('F', 8, AF9)>; /* TIM13_CH1 */
+			bias-disable;
+			drive-push-pull;
+			slew-rate = <0>;
+		};
+	};
+
+	tim13_pwm_sleep_pins_a: tim13_pwm_sleep-0 {
+		pins {
+			pinmux = <STM32_PINMUX('F', 8, ANALOG)>; /* TIM13_CH1 */
+		};
+	};
+
+
+	lptim2_counter_pins_a: lptim2_counter-0 {
+		pins {
+			pinmux = <STM32_PINMUX('D', 11, AF3)>, /* LPTIM2_IN2 */
+					 <STM32_PINMUX('D', 12, AF3)>; /* LPTIM2_IN1 */
+			bias-disable;
+		};
+	};
+
+	lptim2_counter_sleep_pins_a: lptim2_counter_sleep-0 {
+		pins {
+			pinmux = <STM32_PINMUX('D', 11, ANALOG)>, /* LPTIM2_IN2 */
+					 <STM32_PINMUX('D', 12, ANALOG)>; /* LPTIM2_IN1 */
+		};
+	};
+
+
+
+	ltdc_pins_x: ltdc-0 {
+		pins1 {
+			pinmux = <STM32_PINMUX('C', 6, AF14)>, /* LTDC_HSYNC */
+					 <STM32_PINMUX('D', 6, AF14)>, /* LTDC_B2 */
+					 <STM32_PINMUX('D', 10, AF14)>, /* LTDC_B3 */
+					 <STM32_PINMUX('E', 11, AF14)>, /* LTDC_G3 */
+					 <STM32_PINMUX('E', 12, AF14)>, /* LTDC_B4 */
+					 <STM32_PINMUX('E', 13, AF14)>, /* LTDC_DE */
+					 <STM32_PINMUX('E', 15, AF14)>, /* LTDC_R7 */
+					 <STM32_PINMUX('H', 8, AF14)>, /* LTDC_R2 */
+					 <STM32_PINMUX('H', 9, AF14)>, /* LTDC_R3 */
+					 <STM32_PINMUX('H', 10, AF14)>, /* LTDC_R4 */
+					 <STM32_PINMUX('H', 11, AF14)>, /* LTDC_R5 */
+					 <STM32_PINMUX('H', 12, AF14)>, /* LTDC_R6 */
+					 <STM32_PINMUX('H', 13, AF14)>, /* LTDC_G2 */
+					 <STM32_PINMUX('H', 15, AF14)>, /* LTDC_G4 */
+					 <STM32_PINMUX('I', 0, AF14)>, /* LTDC_G5 */
+					 <STM32_PINMUX('I', 1, AF14)>, /* LTDC_G6 */
+					 <STM32_PINMUX('I', 2, AF14)>, /* LTDC_G7 */
+					 <STM32_PINMUX('I', 5, AF14)>, /* LTDC_B5 */
+					 <STM32_PINMUX('I', 6, AF14)>, /* LTDC_B6 */
+					 <STM32_PINMUX('I', 7, AF14)>, /* LTDC_B7 */
+					 <STM32_PINMUX('I', 9, AF14)>; /* LTDC_VSYNC */
+			bias-disable;
+			drive-push-pull;
+			slew-rate = <0>;
+		};
+		pins2 {
+			pinmux = <STM32_PINMUX('E', 14, AF14)>; /* LTDC_CLK */
+			bias-disable;
+			drive-push-pull;
+			slew-rate = <1>;
+		};
+	};
+
+	ltdc_sleep_pins_x: ltdc_sleep-0 {
+		pins {
+			pinmux = <STM32_PINMUX('C', 6, ANALOG)>, /* LTDC_HSYNC */
+					 <STM32_PINMUX('D', 6, ANALOG)>, /* LTDC_B2 */
+					 <STM32_PINMUX('D', 10, ANALOG)>, /* LTDC_B3 */
+					 <STM32_PINMUX('E', 11, ANALOG)>, /* LTDC_G3 */
+					 <STM32_PINMUX('E', 12, ANALOG)>, /* LTDC_B4 */
+					 <STM32_PINMUX('E', 13, ANALOG)>, /* LTDC_DE */
+					 <STM32_PINMUX('E', 14, ANALOG)>, /* LTDC_CLK */
+					 <STM32_PINMUX('E', 15, ANALOG)>, /* LTDC_R7 */
+					 <STM32_PINMUX('H', 8, ANALOG)>, /* LTDC_R2 */
+					 <STM32_PINMUX('H', 9, ANALOG)>, /* LTDC_R3 */
+					 <STM32_PINMUX('H', 10, ANALOG)>, /* LTDC_R4 */
+					 <STM32_PINMUX('H', 11, ANALOG)>, /* LTDC_R5 */
+					 <STM32_PINMUX('H', 12, ANALOG)>, /* LTDC_R6 */
+					 <STM32_PINMUX('H', 13, ANALOG)>, /* LTDC_G2 */
+					 <STM32_PINMUX('H', 15, ANALOG)>, /* LTDC_G4 */
+					 <STM32_PINMUX('I', 0, ANALOG)>, /* LTDC_G5 */
+					 <STM32_PINMUX('I', 1, ANALOG)>, /* LTDC_G6 */
+					 <STM32_PINMUX('I', 2, ANALOG)>, /* LTDC_G7 */
+					 <STM32_PINMUX('I', 5, ANALOG)>, /* LTDC_B5 */
+					 <STM32_PINMUX('I', 6, ANALOG)>, /* LTDC_B6 */
+					 <STM32_PINMUX('I', 7, ANALOG)>, /* LTDC_B7 */
+					 <STM32_PINMUX('I', 9, ANALOG)>; /* LTDC_VSYNC */
+		};
+	};
+
+	uart7_pins_a: uart7-0 {
+		pins1 {
+			pinmux = <STM32_PINMUX('E', 7, AF7)>; /* UART7_RX */
+			bias-disable;
+		};
+		pins2 {
+			pinmux = <STM32_PINMUX('E', 8, AF7)>; /* UART7_TX */
+			bias-disable;
+			drive-push-pull;
+			slew-rate = <0>;
+		};
+	};
+
+	uart7_sleep_pins_a: uart7_sleep-0 {
+		pins {
+			pinmux = <STM32_PINMUX('E', 7, ANALOG)>, /* UART7_RX */
+					 <STM32_PINMUX('E', 8, ANALOG)>; /* UART7_TX */
+		};
+	};
+
+	i2c6_pins_a: i2c6-0 {
+		pins {
+			pinmux = <STM32_PINMUX('A', 11, AF2)>, /* I2C6_SCL */
+					 <STM32_PINMUX('A', 12, AF2)>; /* I2C6_SDA */
+			bias-disable;
+			drive-open-drain;
+			slew-rate = <0>;
+		};
+	};
+
+	i2c6_sleep_pins_a: i2c6_sleep-0 {
+		pins {
+			pinmux = <STM32_PINMUX('A', 11, ANALOG)>, /* I2C6_SCL */
+					 <STM32_PINMUX('A', 12, ANALOG)>; /* I2C6_SDA */
+		};
+	};
+
+	eegalax_pins_a: eegalax-0 {
+		pins {
+			pinmux = <STM32_PINMUX('H', 6, GPIO)>;
+			bias-disable;
+			drive-push-pull;
+			slew-rate = <0>;
+		};
+	};
+
+
+
+
+};
+
+&dsi{
+	status = "disabled";
+};
+
+&gpu {
+	status = "okay";
+};
+
+
+&cryp1 {
+	status = "okay";
+};
+
+
+&rtc {
+	st,lsco = <RTC_OUT2_RMP>;
+	pinctrl-0 = <&rtc_out2_rmp_pins_a>;
+	pinctrl-names = "default";
+};
+
+&sdmmc2 {
+	//arm,primecell-periphid = <0x10153180>;
+	pinctrl-names = "default", "opendrain", "sleep";
+	pinctrl-0 = <&sdmmc2_b4_pins_a>;
+	pinctrl-1 = <&sdmmc2_b4_od_pins_a>;
+	pinctrl-2 = <&sdmmc2_b4_sleep_pins_a>;
+	non-removable;
+	no-sd;
+	no-sdio;
+	mmc-ddr-3_3v;
+	st,neg-edge;
+	bus-width = <4>;
+	vmmc-supply = <&v3v3>;
+	vqmmc-supply = <&v3v3>;
+	status = "okay";
+};
+
+&timers2{
+	status = "okay";
+
+	/* USER CODE BEGIN timers2 */
+	/delete-property/dmas;
+	/delete-property/dma-names;
+	/* USER CODE END timers2 */
+
+	pwm1: pwm{
+			pinctrl-names = "default", "sleep";
+			pinctrl-0 = <&tim2_pwm_pins_a>;
+			pinctrl-1 = <&tim2_pwm_sleep_pins_a>;
+			status = "okay";
+
+		/* USER CODE BEGIN timers2_pwm */
+		/* USER CODE END timers2_pwm */
+	};
+};
+
+&timers3{
+	status = "okay";
+
+	/* USER CODE BEGIN timers2 */
+	/delete-property/dmas;
+	/delete-property/dma-names;
+	/* USER CODE END timers2 */
+
+	pwm2: pwm{
+			pinctrl-names = "default", "sleep";
+			pinctrl-0 = <&tim3_pwm_pins_a>;
+			pinctrl-1 = <&tim3_pwm_sleep_pins_a>;
+			status = "okay";
+
+		/* USER CODE BEGIN timers2_pwm */
+		/* USER CODE END timers2_pwm */
+	};
+};
+
+
+&timers4{
+	status = "okay";
+
+	/* USER CODE BEGIN timers2 */
+	/delete-property/dmas;
+	/delete-property/dma-names;
+	/* USER CODE END timers2 */
+
+	pwm3: pwm{
+			pinctrl-names = "default", "sleep";
+			pinctrl-0 = <&tim4_pwm_pins_a>;
+			pinctrl-1 = <&tim4_pwm_sleep_pins_a>;
+			status = "okay";
+
+		/* USER CODE BEGIN timers2_pwm */
+		/* USER CODE END timers2_pwm */
+	};
+};
+
+&timers13{
+	status = "okay";
+
+	/* USER CODE BEGIN timers2 */
+	/delete-property/dmas;
+	/delete-property/dma-names;
+	/* USER CODE END timers2 */
+
+	pwm4: pwm{
+			pinctrl-names = "default", "sleep";
+			pinctrl-0 = <&tim13_pwm_pins_a>;
+			pinctrl-1 = <&tim13_pwm_sleep_pins_a>;
+			status = "okay";
+
+		/* USER CODE BEGIN timers2_pwm */
+		/* USER CODE END timers2_pwm */
+	};
+};
+
+
+&lptimer2{
+	status = "okay";
+
+	/* USER CODE BEGIN lptimer2 */
+	/* USER CODE END lptimer2 */
+
+	counter{
+		pinctrl-names = "default", "sleep";
+		pinctrl-0 = <&lptim2_counter_pins_a>;
+		pinctrl-1 = <&lptim2_counter_sleep_pins_a>;
+		status = "okay";
+
+		/* USER CODE BEGIN lptimer2_counter */
+		/* USER CODE END lptimer2_counter */
+	};
+};
+
+
+&ltdc{
+	pinctrl-names = "default", "sleep";
+	pinctrl-0 = <&ltdc_pins_x>;
+	pinctrl-1 = <&ltdc_sleep_pins_x>;
+	status = "okay";
+
+	/* USER CODE BEGIN ltdc */
+
+
+	port {
+
+		ltdc_out_rgb: endpoint@0 {
+			remote-endpoint = <&panel_in>;
+		};
+	};
+
+	/* USER CODE END ltdc */
+};
+
+
+// UART7 
+
+&uart7 {
+	pinctrl-names = "default", "sleep";
+	pinctrl-0 = <&uart7_pins_a>;
+	pinctrl-1 = <&uart7_sleep_pins_a>;
+	status = "okay";
+};
+
+// I2C6,SPI5_SCK
+&i2c6{
+	pinctrl-names = "default", "sleep";
+	pinctrl-0 = <&i2c6_pins_a>;
+	pinctrl-1 = <&i2c6_sleep_pins_a>;
+	status = "okay";
+
+	/* USER CODE BEGIN i2c4 */
+
+	polytouch: eegalax-ts@2a {
+		compatible = "hid-over-i2c";
+		reg = <0x2a>;
+		hid-descr-addr = <0x000f>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&eegalax_pins_a>;
+		interrupt-parent = <&gpioh>;
+		interrupts = <6 IRQ_TYPE_LEVEL_LOW>;
+		//wakeup-gpios = <&gpiod 15 GPIO_ACTIVE_HIGH>;
+
+		touchscreen-size-x = <1024>;
+		touchscreen-size-y = <768>;
+		touchscreen-inverted-x;
+		touchscreen-inverted-y;
+		status="okay";
+	};
+
+	/* USER CODE END i2c4 */
+};
+
+// ETH
+

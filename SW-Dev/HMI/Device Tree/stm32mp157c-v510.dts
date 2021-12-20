@@ -24,16 +24,6 @@
 	chosen {
 		stdout-path = "serial0:115200n8";
 	};
-
-	panel {
-		compatible = "innolux,g121x1-l03", "simple-panel";
-		//backlight = <&backlight>;
-		port@0 {
-			panel_in: endpoint {
-				remote-endpoint = <&ltdc_out_rgb>;
-			};
-		};
-	};
 };
 
 &pinctrl{
@@ -335,10 +325,11 @@
 	/delete-property/dma-names;
 	/* USER CODE END timers2 */
 
-	pwm4: pwm{
+	pwm4: pwm {
 			pinctrl-names = "default", "sleep";
 			pinctrl-0 = <&tim13_pwm_pins_a>;
 			pinctrl-1 = <&tim13_pwm_sleep_pins_a>;
+			#pwm-cells = <2>;
 			status = "okay";
 
 		/* USER CODE BEGIN timers2_pwm */
@@ -346,6 +337,24 @@
 	};
 };
 
+backlight:panel-backlight {
+ 
+                compatible = "pwm-backlight";
+                pwms = <&pwm4 0 5000000>;
+                brightness-levels = <0 4 8 16 32 64 128 255>;
+                default-brightness-level = <6>;
+                status = "okay";
+ };
+
+panel {
+		compatible = "innolux,g121x1-l03", "simple-panel";
+		backlight = <&backlight>;
+		port@0 {
+			panel_in: endpoint {
+				remote-endpoint = <&ltdc_out_rgb>;
+			};
+		};
+};
 
 &lptimer2{
 	status = "okay";

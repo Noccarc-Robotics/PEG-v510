@@ -3,8 +3,8 @@
 ** @brief    User Space Driver for HDC2080
 ** @author   Copyright (C) 2021  Noccarc Robotics Pvt Ltd
 ** @author   Nipun Pal <nipun.k@noccarc.com>
-** @version  v1
-** @modified 28/09/21  Module Creation
+** @version  v1.01
+** @modified 25/12/21  Changes for proper sampling
 **
 ********************************************************************/
 
@@ -26,7 +26,7 @@ int HexadecimalToDecimal(char *hex) {
     for(i = BUFFSIZE - 1 ; i >= 0 ; --i){
 
         // converting c[i] to appropriate decimal form
-        if(hex[i]>='0'&&hex[i]<='9'){
+        if(hex[i]>='0'&& hex[i]<='9'){
             r = hex[i] - '0';
         }
         else{
@@ -129,7 +129,10 @@ int main(){
 
     printf("Start Measurement ....\n");
 
-    // Enable measurement by writing into Measurement Configuration Register
+    // Configuration : sample rate 1Hz , soft rest and interrupts disabled.
+    system("i2ctransfer -f -y 0 w2@0x40 0x0E 0x50");
+
+        // Enable measurement by writing into Measurement Configuration Register
     system("i2ctransfer -f -y 0 w2@0x40 0x0F 0x01");
 
     while(1) {

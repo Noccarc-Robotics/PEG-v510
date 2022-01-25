@@ -25,10 +25,8 @@ enum Result : uint8_t {
 /*********************************************************************************************************************/
 
 
-//Init command list
-static char Init1[] = "AT\r\n";
-static char Init2[] = "ATI\r\n";
-static char Init3[] = "AT+CPIN?\r\n";
+//Response Buffer
+static char rbuf[255];
 
 
 class QModem {
@@ -38,7 +36,8 @@ class QModem {
         ~QModem();
 
         int openPort();
-        int sendPort();
+        int sendCommand(const char *command);
+        int readPort();
         int closePort();
         int set_interface_attribs (int fd, int speed, int parity);
         void set_blocking (int fd, int should_block);

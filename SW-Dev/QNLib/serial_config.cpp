@@ -4,7 +4,7 @@
 QModem::QModem()
 {
     serial_port = 0;
-    pathSerial = "/dev/pts/0";
+    pathSerial = "/dev/ttyUSB2";
 }
 
 QModem::~QModem()
@@ -13,55 +13,69 @@ QModem::~QModem()
 
 int QModem::openPort()
 {
-    std::cout << "openPort() [QModem] started with the following paramters... pathSerial = " << pathSerial << ", baudrate = 115200" << std::endl;
+    std::cout << "[QModem]: OpenPort() started with the following parameter : pathSerial = " << pathSerial << ", baudrate = 115200" << std::endl;
 
     serial_port = open(pathSerial.c_str(), O_RDWR| O_NOCTTY | O_SYNC);
 
     // Check for errors
     if (serial_port < 0) {
 
-       // std::cout << "Error " << errno << "from open: " << std::strerror(errno) << std::endl;
-       std::cout << "Unable to open Port" << std::endl;
+       std::cout << "[QModem] OpenPort() : [ERROR]: " << std::strerror(errno) << std::endl;
+       return FAILURE;
 
     } else {
 
-        std::cout << "Port opened successfully." << std::endl;
+        std::cout << "[QModem] OpenPort() : [SUCCESS] Port opened successfully." << std::endl;
+        set_interface_attribs (serial_port, B115200, 0);  // set speed to 115,200 bps, 8n1 (no parity)
+        set_blocking (serial_port, 0);      // set no blocking
+
+        return SUCCESS;
 
     }
 
-    set_interface_attribs (serial_port, B115200, 0);  // set speed to 115,200 bps, 8n1 (no parity)
-    set_blocking (serial_port, 0);      // set no blocking
-
-    return SUCCESS;
-
 }
 
-int QModem::sendPort()
+int QModem::sendCommand(const char *command)
 {
 
-    std::cout << "write() [QModem] started with the following parameter... textString = " << Init1 << std::endl;
+    std::cout << "[QModem][Write] Command to be sent:  = " << command << std::endl;
 
-    write (serial_port, &Init1, sizeof(Init1));           // send 7 character greeting
-
-    usleep ((sizeof(Init1) + 25) * 100);             // sleep enough to transmit the 7 plus
+    int bytesWritten = write (serial_port, command, sizeof(command));           // send 7 character greeting
+    usleep ((sizeof(command) + 25) * 100); // sleep enough to transmit the 7 plus
                                         // receive 25:  approx 100 uS per char transmit
 
-    write (serial_port, &Init2, sizeof(Init2));           // send 7 character greeting
-
-    usleep ((sizeof(Init2) + 25) * 100);             // sleep enough to transmit the 7 plus
-                                        // receive 25:  approx 100 uS per char transmit
-    write (serial_port, &Init3, sizeof(Init3));           // send 7 character greeting
-
-    usleep ((sizeof(Init3) + 25) * 100);             // sleep enough to transmit the 7 plus
-                                        // receive 25:  approx 100 uS per char transmit
     //SENDING FINISHED
-    std::cout << "write() [serial_communcation] finished..." << std::endl;
-    return SUCCESS;
+    std::cout << "[QModem][Write] Finished Successfully" << std::endl;
+
+    if(bytesWritten > 0)
+        return SUCCESS;
+    else
+        return FAILURE;
 }
+
+int QModem::readPort(){
+
+    memset(rbuf, 0, sizeof(rbuf));
+
+    std::cout << "[QModem][Read] started reading port = " << std::endl;
+
+    sleep(0.5);
+    int bytesread = read(serial_port, &rbuf, sizeof(rbuf));
+
+    std::cout << "[QModem][Read] Finished : Number of bytes read = " << bytesread << std::endl;
+    std::cout << "Response : " << rbuf << std::endl;
+
+    if(bytesread > 0)
+        return SUCCESS;
+    else
+        return FAILURE;
+
+}
+
 
 int QModem::closePort()
 {
-    std::cout << "closePort() [QModem] Closing Port..." << std::endl;
+    std::cout << "[QModem][Close] Closing Port..." << std::endl;
     close(serial_port);
     return SUCCESS;
 }

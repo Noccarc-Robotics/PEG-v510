@@ -1,0 +1,13 @@
+# iiod - Systemd init script
+#
+# Copyright (C) 2016 Analog Devices Inc.
+
+[Unit]
+Description=Display Deamon
+After=weston@root.service
+
+[Service]
+ExecStart=/usr/local/sn65dsi83_dsi.sh
+
+[Install]
+WantedBy=multi-user.target
